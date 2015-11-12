@@ -15,7 +15,5 @@ def get_source_code(url):
 
 
 def url_list():
-    with open("./URL") as f:
-        content = [line.rstrip('\n') for line in open('./URL')]
+    content = [line.rstrip('\n') for line in open('./URL')]
     return content
-    f.close()
