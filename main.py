@@ -11,3 +11,9 @@ def get_source_code(url):
             return response.read()
         except requests.exceptions.RequestException as e:
             print(e)
+
+
+
+def url_list():
+    content = [line.rstrip('\n') for line in open('./URL')]
+    return content
