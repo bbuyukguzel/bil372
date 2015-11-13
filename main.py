@@ -5,28 +5,27 @@ import random
 import codecs
 
 
-
 def get_source_code(url):
-        try:
-            user_agent = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1'
-            headers = {'User-Agent': user_agent, }
-            request = urllib.request.Request(url, None, headers)
-            response = urllib.request.urlopen(request)
-            code = response.read()
+    try:
+        user_agent = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1'
+        headers = {'User-Agent': user_agent, }
+        request = urllib.request.Request(url, None, headers)
+        response = urllib.request.urlopen(request)
+        code = response.read()
 
-            # don't care between style tags
-            while(code.find(b'<style>') != -1):
-                s_index = code.find(b'<style>')
-                e_index = code.find(b'</style>', s_index)
-                code = code[:s_index]+code[e_index+(len('</style>')):]
-            # don't care between script tags
-            while(code.find(b'<script') != -1):
-                s_index = code.find(b'<script')
-                e_index = code.find(b'</script>', s_index)
-                code = code[:s_index]+code[e_index+(len('</script>')):]
-            return codecs.decode(code, "utf-8", "ignore")
-        except requests.exceptions.RequestException as e:
-            print(e)
+        # don't care between style tags
+        while (code.find(b'<style>') != -1):
+            s_index = code.find(b'<style>')
+            e_index = code.find(b'</style>', s_index)
+            code = code[:s_index] + code[e_index + (len('</style>')):]
+        # don't care between script tags
+        while (code.find(b'<script') != -1):
+            s_index = code.find(b'<script')
+            e_index = code.find(b'</script>', s_index)
+            code = code[:s_index] + code[e_index + (len('</script>')):]
+        return codecs.decode(code, 'utf-8', 'ignore')
+    except requests.exceptions.RequestException as e:
+        print(e)
 
 
 def find_phone(source):
@@ -38,16 +37,16 @@ def find_phone(source):
 def find_name(code):
     char, i = "", 0
     pattern = '(<title>|<TITLE>)(.*)(<\/title>|<\/TITLE>)'
-    res = re.search(pattern, code)
+    res = re.findall(pattern, code)
     print(res)
     title = str(res[0][1])  # between title tags
 
     # Remove texts after the name
     for char in title:
-        if(char in {'|', '\'', ',', ':', '-'}):
+        if (char in {'|', '\'', ',', ':', '-'}):
             break
         i += 1
-    if(i == len(title)):
+    if (i == len(title)):
         name = title
     else:
         name = title[:title.index(char)]
@@ -57,7 +56,7 @@ def find_name(code):
 
 # returns random n lines in URL list file
 def test(n=5, sample=True):
-    with open("URL.txt") as file:
+    with open('URL.txt') as file:
         content = [line.rstrip('\n') for line in file]
     file.close()
     if sample:
@@ -67,23 +66,22 @@ def test(n=5, sample=True):
 
 
 def main(url):
+    print('-' * 20)
+    print(url)
     source = get_source_code(url)
 
     # parse functions add here
     # find_bla(source) etc.
     find_phone(source)
 
-    print(url)
-    print('-'*20)
-
 
 # test function for find_number(source)
 def get_names():
-    for url in test(sample=False):
+    for url in test(10):
         src = get_source_code(url)
-        print(url +"-->" +find_name(src))
+        print(url + "-->" + find_name(src))
 
 
 if __name__ == '__main__':
-    #print(list(map(main, test(5))))
+    # print(list(map(main, test(5))))
     get_names()
