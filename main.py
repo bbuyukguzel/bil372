@@ -4,8 +4,6 @@ import re
 import random
 import codecs
 
-# TODO List
-# get_source_code da s_index i kontrol et
 
 
 def get_source_code(url):
