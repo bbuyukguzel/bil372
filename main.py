@@ -1,6 +1,11 @@
 import urllib
 import requests
 import re
+import random
+
+
+# TODO List
+# get_source_code da s_index i kontrol et
 
 
 def get_source_code(url):
@@ -26,25 +31,29 @@ def get_source_code(url):
             print(e)
 
 
-
-
-def find_phone(code):
+def find_phone(source):
     pattern1 = b'(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?'
     pattern2 = b'(\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4})'
-    print(re.findall(pattern2, code))
+    print(re.findall(pattern2, source))
 
 
-
-def url_list():
-    with open("URL.txt") as f:
-        content = [line.rstrip('\n') for line in open('URL.txt')]
-    return content
-    f.close()
-
-
+# returns random n lines in URL list file
+def test(n):
+    with open("URL.txt") as file:
+        content = [line.rstrip('\n') for line in file]
+    file.close()
+    return random.sample(content, n)
 
 
-for i in url_list():
-    print(i)
-    code = get_source_code(i)
-    find_phone(code)
+def main(url):
+    source = get_source_code(url)
+
+    # parse functions add here
+    # find_bla(source) etc.
+    find_phone(source)
+
+    print(url)
+    print('-'*20)
+
+
+print(list(map(main, test(5))))
