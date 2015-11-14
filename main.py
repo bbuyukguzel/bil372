@@ -98,10 +98,11 @@ def check_link(source, string):
 
 # test function for find_number(source)
 def get_names():
-    for url in test(10):
-        src = get_source_code(url)
-        print(url + "-->" + find_name(src))
-
+    for url in test():
+        isTrueURLPattern = "^(https?|ftp)://(-\.)?([^\s/?\.#-]+\.?)+(/[^\s]*)?$"
+        if re.search(isTrueURLPattern, str(url)):
+            src = get_source_code(url)
+            print(url + "-->" + find_name(src))
 
 if __name__ == '__main__':
     # print(list(map(main, test(5))))
