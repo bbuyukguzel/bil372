@@ -84,6 +84,18 @@ def check_link(source, string):
                 return reg.group(0)
     return False
 
+#It finds links, if main cant parse
+def check_link(source, string):
+    soup = BeautifulSoup(source)
+    for href_ in soup.find_all('a'):
+        reg = re.search('(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?', str(href_))
+        if reg:
+            # print(reg.group(0), "---->", reg.group(0).find(str('teach')))
+            if reg.group(0).lower().find(str(string)) == 0:
+                return reg.group(0)
+    return False
+
+
 # test function for find_number(source)
 def get_names():
     for url in test(10):
