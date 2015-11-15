@@ -1,59 +1,59 @@
-import urllib
-import requests
+import urllib, urllib.request
+import requests, requests.exceptions
+from bs4 import BeautifulSoup
 import re
 import random
-
-
-# TODO List
-# get_source_code da s_index i kontrol et
+import codecs
+from parser import Parser
 
 
 def get_source_code(url):
-        try:
-            user_agent = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1'
-            headers = {'User-Agent': user_agent, }
-            request = urllib.request.Request(url, None, headers)
-            response = urllib.request.urlopen(request)
-            code = response.read()
+    try:
+        user_agent = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1'
+        headers = {'User-Agent': user_agent, }
+        request = urllib.request.Request(url, None, headers)
+        response = urllib.request.urlopen(request)
+        code = response.read()
 
-            # don't care between style tags
-            while(code.find(b'<style>')!= -1):
-                s_index = code.find(b'<style>')
-                e_index = code.find(b'</style>', s_index)
-                code = code[:s_index]+code[e_index+(len('</style>')):]
-            # don't care between script tags
-            while(code.find(b'<script') != -1):
-                s_index = code.find(b'<script')
-                e_index = code.find(b'</script>', s_index)
-                code = code[:s_index]+code[e_index+(len('</script>')):]
-            return code
-        except requests.exceptions.RequestException as e:
-            print(e)
-
-
-def find_phone(source):
-    pattern1 = b'(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?'
-    pattern2 = b'(\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4})'
-    print(re.findall(pattern2, source))
+        # don't care between style tags
+        while code.find(b'<style>') != -1:
+            s_index = code.find(b'<style>')
+            e_index = code.find(b'</style>', s_index)
+            code = code[:s_index] + code[e_index + (len('</style>')):]
+        # don't care between script tags
+        while code.find(b'<script') != -1:
+            s_index = code.find(b'<script')
+            e_index = code.find(b'</script>', s_index)
+            code = code[:s_index] + code[e_index + (len('</script>')):]
+        return codecs.decode(code, 'utf-8', 'ignore')
+    except requests.exceptions.RequestException as e:
+        print(e)
 
 
 # returns random n lines in URL list file
-def test(n):
-    with open("URL.txt") as file:
+def test(n=5, sample=True):
+    with open('URL.txt') as file:
         content = [line.rstrip('\n') for line in file]
     file.close()
-    return random.sample(content, n)
+    if sample:
+        return random.sample(content, n)
+    else:
+        return content
 
 
-def main(url):
-    source = get_source_code(url)
+#It finds links, if main cant parse
+def check_link(source, string):
+    soup = BeautifulSoup(source)
+    for href_ in soup.find_all('a'):
+        reg = re.search('(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?', str(href_))
+        if reg:
+            # print(reg.group(0), "---->", reg.group(0).find(str('teach')))
+            if reg.group(0).lower().find(str(string)) == 0:
+                return reg.group(0)
+    return False
 
-    # parse functions add here
-    # find_bla(source) etc.
-    find_phone(source)
 
-    print(url)
-    print('-'*20)
-
-
-print(list(map(main, test(5))))
+if __name__ == '__main__':
+    # print(list(map(main, test(5))))
+    for url in test(3):
+        Parser(get_source_code(url))
