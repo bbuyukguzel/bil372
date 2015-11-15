@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import re
 import random
 import codecs
+from parser import Parser
 
 
 def get_source_code(url):
@@ -29,32 +30,6 @@ def get_source_code(url):
         print(e)
 
 
-def find_phone(source):
-    # pattern1 = b'(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?'
-    pattern2 = '(\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4})'
-    print(re.findall(pattern2, source))
-
-
-def find_name(code):
-    char, i = "", 0
-    pattern = '(<title>|<TITLE>)(.*)(<\/title>|<\/TITLE>)'
-    res = re.findall(pattern, code)
-    print(res)
-    title = str(res[0][1])  # between title tags
-
-    # Remove texts after the name
-    for char in title:
-        if (char in {'|', '\'', ',', ':', '-'}):
-            break
-        i += 1
-    if (i == len(title)):
-        name = title
-    else:
-        name = title[:title.index(char)]
-
-    return name
-
-
 # returns random n lines in URL list file
 def test(n=5, sample=True):
     with open('URL.txt') as file:
@@ -64,16 +39,6 @@ def test(n=5, sample=True):
         return random.sample(content, n)
     else:
         return content
-
-
-def main(url):
-    print('-' * 20)
-    print(url)
-    source = get_source_code(url)
-
-    # parse functions add here
-    # find_bla(source) etc.
-    find_phone(source)
 
 
 #It finds links, if main cant parse
@@ -88,13 +53,7 @@ def check_link(source, string):
     return False
 
 
-# test function for find_number(source)
-def get_names():
-    for url in test(5):
-        src = get_source_code(url)
-        print(url + "-->" + find_name(src))
-
-
 if __name__ == '__main__':
     # print(list(map(main, test(5))))
-    get_names()
+    for url in test(3):
+        Parser(get_source_code(url))
