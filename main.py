@@ -16,12 +16,12 @@ def get_source_code(url):
         code = response.read()
 
         # don't care between style tags
-        while (code.find(b'<style>') != -1):
+        while code.find(b'<style>') != -1:
             s_index = code.find(b'<style>')
             e_index = code.find(b'</style>', s_index)
             code = code[:s_index] + code[e_index + (len('</style>')):]
         # don't care between script tags
-        while (code.find(b'<script') != -1):
+        while code.find(b'<script') != -1:
             s_index = code.find(b'<script')
             e_index = code.find(b'</script>', s_index)
             code = code[:s_index] + code[e_index + (len('</script>')):]
