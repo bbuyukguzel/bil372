@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import re
 import random
 import codecs
-from parser import Parser
+from info_parser import Parser
 
 
 def get_source_code(url):
@@ -41,7 +41,7 @@ def test(n=5, sample=True):
         return content
 
 
-#It finds links, if main cant parse
+# It finds links, if main cant parse
 def check_link(source, string):
     soup = BeautifulSoup(source)
     for href_ in soup.find_all('a'):
@@ -52,8 +52,8 @@ def check_link(source, string):
                 return reg.group(0)
     return False
 
-
 if __name__ == '__main__':
-    # print(list(map(main, test(5))))
-    for url in test(3):
-        Parser(get_source_code(url))
+
+    for url in test(3, sample=False):
+        p = Parser(URL=url)
+        print(p.find_uniname())
