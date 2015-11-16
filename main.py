@@ -46,13 +46,14 @@ def test(n=5, sample=True):
 # It finds links, if main cant parse
 def check_link(source, string):
     soup = BeautifulSoup(source)
-    for href_ in soup.find_all('a'):
-        reg = re.search('(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?', str(href_))
+    for href_ in soup.find_all('a', href=True):
+        reg = re.search('(([a-zA-Z0-9])|(\/[a-z]+)|([a-zA-z0-9]*\/)|(https?:\/\/))((\/[a-zA-Z0-9]*)|(([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?))',
+                        str(href_))
         if reg:
-            # print(reg.group(0), "---->", reg.group(0).find(str('teach')))
-            if reg.group(0).lower().find(str(string)) == 0:
+            if string in reg.group(0):
                 return reg.group(0)
     return False
+
 
 if __name__ == '__main__':
 
