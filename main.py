@@ -1,9 +1,11 @@
-import urllib, urllib.request
-import requests, requests.exceptions
-from bs4 import BeautifulSoup
+import urllib
+import urllib.request
+import requests
+import requests.exceptions
 import re
 import random
 import codecs
+from bs4 import BeautifulSoup
 from info_parser import Parser
 
 
