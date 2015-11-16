@@ -56,6 +56,6 @@ def check_link(source, string):
 
 if __name__ == '__main__':
 
-    for url in test(3, sample=False):
-        p = Parser(URL=url)
-        print(p.find_uniname())
+    for url in test(20):
+        p = Parser(url, get_source_code(url))
+        p.find_email()
