@@ -1,8 +1,8 @@
-http://scholar.harvard.edu/rogoff/home
+https://www.educ.cam.ac.uk/people/staff/kettley/
 http://www.rdwolff.com/
+http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/
 http://kammen.berkeley.edu/
 http://www.imperial.ac.uk/people/r.kitney
-http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/
 http://www.zimbardo.com/
 http://www.kevinwarwick.com/
 http://www.clarku.edu/faculty/facultybio.cfm?id=343
@@ -32,8 +32,6 @@ http://bnrg.cs.berkeley.edu/~adj/
 http://www.andrewng.org/
 http://www.eecs.berkeley.edu/~richter/
 http://www.cs.berkeley.edu/~jordan/
-http://www.gsb.stanford.edu/faculty-research/faculty/david-p-baron
-http://www.gsb.stanford.edu/faculty-research/faculty/charles-puis-bonini
 http://pages.cpsc.ucalgary.ca/~ozyert/index2.html
 https://www.educ.cam.ac.uk/people/staff/kettley/
 http://www.csl.cornell.edu/~cbatten/
@@ -43,7 +41,6 @@ http://www.cs.cornell.edu/~bracy/
 http://yoavartzi.com/
 http://www.cs.cornell.edu/~eland/
 http://www.cs.cornell.edu/home/halpern/
-http://www.cs.cornell.edu/gomes/
 http://zsaygi.etu.edu.tr/
 http://mtan.etu.edu.tr/
 http://www.umram.bilkent.edu.tr/~ergin/mycv/index.php

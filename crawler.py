@@ -60,20 +60,20 @@ class Crawler:
         while not self.__URLQueue.empty():
             URL = self.__URLQueue.get()
             self.__p = Parser(source=self.get_source_code(URL), URL=URL)
-            if(self.__fields["name"] == ""):
+            if(self.__fields["name"] != None and len(self.__fields["name"]) == 0):
                 self.__fields["name"] = self.__p.find_name()
 
-            if(self.__fields["uni"] == ""):
+            if(self.__fields["uni"] != None and len(self.__fields["uni"]) == 0):
                 self.__fields["uni"] = self.__p.find_uniname()
-            """
-            if(self.__fields["tel"] == ""):
+
+            if(self.__fields["tel"] != None and len(self.__fields["tel"]) == 0):
                 self.__fields["tel"] = self.__p.find_phone()
-            """
-            if(self.__fields["email"] == ""):
+
+            if(self.__fields["email"] != None and len(self.__fields["email"]) == 0):
                 self.__fields["email"] = self.__p.find_email()
 
     def run(self):
         self.__URLQueue.put(self.URL)
         self.get_links(self.get_source_code(self.URL), self.URL)
         self.traverse()
-        return self.__fields
+        return self.__fields["email"]
