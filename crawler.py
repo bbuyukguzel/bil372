@@ -13,7 +13,7 @@ class Crawler:
         self.__URLQueue = queue.Queue()
         self.__p = None
         self.__keywords = {"contact", "research", "biography", "publication", "class"}
-        self.__fields = {"name": "", "uni": "", "tel": "", "email": ""}
+        self.__fields = {"name": "", "uni": "", "tel": "", "email": "", "publication": ""}
 
     @staticmethod
     def get_source_code(url):
@@ -59,7 +59,9 @@ class Crawler:
     def traverse(self):
         while not self.__URLQueue.empty():
             URL = self.__URLQueue.get()
+
             self.__p = Parser(source=self.get_source_code(URL), URL=URL)
+
             if(self.__fields["name"] != None and len(self.__fields["name"]) == 0):
                 self.__fields["name"] = self.__p.find_name()
 
@@ -71,6 +73,10 @@ class Crawler:
 
             if(self.__fields["email"] != None and len(self.__fields["email"]) == 0):
                 self.__fields["email"] = self.__p.find_email()
+
+            if("publication" in URL):
+                if(self.__fields["publication"] != None and len(self.__fields["publication"]) == 0):
+                    self.__p.find_publication()
 
     def run(self):
         self.__URLQueue.put(self.URL)
