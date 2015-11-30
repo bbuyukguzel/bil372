@@ -56,14 +56,22 @@ class Parser:
 
         # mailto ile başlayabilir
 
-    """
-    def find_publications(self):
+
+    def find_publicationxxx(self):
         publications = []
         source = ''
-        soup_out = BeautifulSoup(self.source, "lxml")
+        print("Bananas," in self.source)
 
-        for t_out in soup_out.findAll(['strong', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'], text=['publications', 'publication', 'Publications:', 'Publications', 'Publication']):
-            source += str(t_out.parent)
+        soup_out = BeautifulSoup(self.source, "lxml")
+        keys = ['publications', 'publication', 'Publications:', 'Publications', 'Publication']
+        tags = soup_out.findAll(['strong', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
+
+        for t_out in tags:
+            for i in keys:
+                if i in t_out.text:
+                    source += str(t_out.parent)
+                    print("*** i: " + str(i) )
+
 
         soup_in = BeautifulSoup(source, "lxml")
 
@@ -71,12 +79,64 @@ class Parser:
             t_in = re.sub('<[^>]*>|\[.*\]|\s{2,}', '', str(t_in))
             publications.append(t_in)
 
-        return publications
-    """
+        for i in publications:
+            print(i)
 
 
     def find_publication(self):
-        soup = BeautifulSoup(self.source, "lxml")
-        text = ""
-        for li in soup.select("li"):
-            print(li.get_text())
+        print("Hello world****************")
+        soup = BeautifulSoup(self.source)
+        source = ""
+        re_year = r'(19[0-9]{2})|(20(0|1)[0-9])'
+
+        # Remove before "publication"
+        keys = ['publications', 'publication', 'Publications:', 'Publications', 'Publication']
+        tags = soup.findAll(['strong', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
+
+        for t_out in tags:
+            for i in keys:
+               if i in t_out:
+                   source = self.source[self.source.index(i):]
+        # end remove
+
+
+
+        soup2 = BeautifulSoup(source)
+
+        if(soup.select("li p")):
+           for lip in soup.select("li p"):
+               text = lip.get_text()
+               if(re.findall(re_year, text) and len(text)>4):
+                    print(text.strip())
+                    print("************")
+
+
+        if(soup.select("div p")):
+            for divp in soup.select("div p"):
+                text = divp.get_text()
+                if(re.findall(re_year, text) and len(text)>50):
+                    print(text.strip())
+                    print("************")
+
+
+        if(soup.select("li span")):
+            for lispan in soup.select("li span"):
+                text = lispan.get_text()
+                if(re.findall(re_year, text) and len(text)>50):
+                    print(text.strip())
+                    print("************")
+
+
+        if(soup.select("div span")):
+            for divspan in soup.select("div span"):
+                text = divspan.get_text()
+                if(re.findall(re_year, text) and len(text)>50):
+                    print(text.strip())
+                    print("************")
+
+        if(soup.select("li")):
+           for li in soup.select("li"):
+                text = li.get_text()
+                if(re.findall(re_year, text) and len(text)>50):
+                    print(text.strip())
+                    print("************")

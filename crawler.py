@@ -61,7 +61,7 @@ class Crawler:
             URL = self.__URLQueue.get()
 
             self.__p = Parser(source=self.get_source_code(URL), URL=URL)
-
+            """
             if(self.__fields["name"] != None and len(self.__fields["name"]) == 0):
                 self.__fields["name"] = self.__p.find_name()
 
@@ -73,13 +73,14 @@ class Crawler:
 
             if(self.__fields["email"] != None and len(self.__fields["email"]) == 0):
                 self.__fields["email"] = self.__p.find_email()
-
-            if("publication" in URL):
+            """
+            if("publica" in URL.lower() or "research" in URL.lower() or "article" in URL.lower()):
                 if(self.__fields["publication"] != None and len(self.__fields["publication"]) == 0):
                     self.__p.find_publication()
+                break
 
     def run(self):
         self.__URLQueue.put(self.URL)
         self.get_links(self.get_source_code(self.URL), self.URL)
         self.traverse()
-        return self.__fields["email"]
+
