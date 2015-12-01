@@ -2,9 +2,10 @@ import re
 import json
 from bs4 import BeautifulSoup
 
+
 class Parser:
-    def __init__(self, URL="", source=""):
-        self.URL = URL
+    def __init__(self, url="", source=""):
+        self.URL = url
         self.source = source
 
     def find_phone(self):
@@ -21,7 +22,7 @@ class Parser:
 
         # Remove texts after the name
         for char in title:
-            if (char in {'|', '\'', ',', ':', '-'}):
+            if(char in {'|', '\'', ',', ':', '-'}):
                 break
             i += 1
         if (i == len(title)):
@@ -45,17 +46,14 @@ class Parser:
 
     def find_email(self):
         pattern1 = r'(?:[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])'
-        pattern2 = r'(^([mailto:(\s)?a-zA-Z0-9_.+-])+(@|(\s?(\{|\(|\[)\s?(at|AT)\s?(\}|\)|\])\s?)|(\s(at|AT|@)\s))[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)'
+        pattern2 = r'^((<[^>]*>)*[mailto:(\sa-zA-Z0-9_.+-])+(@|(\s?(\{|\(|\[)\s?(at|AT)\s?(\}|\)|\])\s?)|(\s(at|AT|@)\s))[a-zA-Z0-9-]+(\.|\s)[a-zA-Z0-9-.]+'
 
-
-        res1 = re.findall(pattern1, self.source)
+        res1 = re.findall(pattern1, self.source, re.IGNORECASE)
         if(len(res1) == 0):
-            return re.findall(pattern2, self.source)
+            result = re.findall(pattern2, self.source, re.IGNORECASE)
+            return result
         else:
             return res1
-
-        # mailto ile başlayabilir
-
 
     def find_publicationxxx(self):
         publications = []
@@ -70,8 +68,7 @@ class Parser:
             for i in keys:
                 if i in t_out.text:
                     source += str(t_out.parent)
-                    print("*** i: " + str(i) )
-
+                    print("*** i: " + str(i))
 
         soup_in = BeautifulSoup(source, "lxml")
 
@@ -82,61 +79,74 @@ class Parser:
         for i in publications:
             print(i)
 
-
     def find_publication(self):
+        PUB_LIMIT = 3
         print("Hello world****************")
         soup = BeautifulSoup(self.source)
-        source = ""
         re_year = r'(19[0-9]{2})|(20(0|1)[0-9])'
 
         # Remove before "publication"
+        source = self.__remove_before_pub(soup)
+
+        soup2 = BeautifulSoup(source)
+        if(len(soup2.select("li p")) > PUB_LIMIT):
+            for lip in soup2.select("li p"):
+                text = lip.get_text()
+                self.__helper_pub(re_year, text, lip)
+
+        elif(len(soup2.select("div p")) > PUB_LIMIT):
+            for divp in soup2.select("div p"):
+                text = divp.get_text()
+                self.__helper_pub(re_year, text, divp.parent)
+
+        elif(len(soup2.select("li span")) > PUB_LIMIT):
+            for lispan in soup2.select("li span"):
+                text = lispan.get_text()
+                self.__helper_pub(re_year, text, lispan)
+
+        if(len(soup2.select("div span")) > PUB_LIMIT):
+            for divspan in soup2.select("div span"):
+                text = divspan.get_text()
+                self.__helper_pub(re_year, text, divspan)
+
+        if(len(soup2.select("p")) > PUB_LIMIT):
+            for p in soup2.select("p"):
+                text = p.get_text()
+                self.__helper_pub(re_year, text, p)
+
+        if(len(soup2.select("li")) > PUB_LIMIT):
+            for li in soup2.select("li"):
+                text = li.get_text()
+                self.__helper_pub(re_year, text, li)
+
+    def __remove_before_pub(self, soup):
         keys = ['publications', 'publication', 'Publications:', 'Publications', 'Publication']
         tags = soup.findAll(['strong', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
 
         for t_out in tags:
             for i in keys:
-               if i in t_out:
-                   source = self.source[self.source.index(i):]
-        # end remove
+                if i in t_out.text:
+                    source = self.source[self.source.index(str(t_out)):]
+                    return source
 
+    def __helper_pub(self, re_year, text, src):
+        PUB_DESC_LIMIT = 50
+        if (re.findall(re_year, text) and len(text) > PUB_DESC_LIMIT):
+            print(self.__check_link_in_pub(src))
+            print(text.strip())
+            print("************")
 
+    def __check_link_in_pub(self, src):
+        hrefs = list()
 
-        soup2 = BeautifulSoup(source)
+        for i in src.find_all("a"):
+            if("href" in i.attrs):
+                if(i["href"] == "#"):
+                    continue
 
-        if(soup.select("li p")):
-           for lip in soup.select("li p"):
-               text = lip.get_text()
-               if(re.findall(re_year, text) and len(text)>4):
-                    print(text.strip())
-                    print("************")
-
-
-        if(soup.select("div p")):
-            for divp in soup.select("div p"):
-                text = divp.get_text()
-                if(re.findall(re_year, text) and len(text)>50):
-                    print(text.strip())
-                    print("************")
-
-
-        if(soup.select("li span")):
-            for lispan in soup.select("li span"):
-                text = lispan.get_text()
-                if(re.findall(re_year, text) and len(text)>50):
-                    print(text.strip())
-                    print("************")
-
-
-        if(soup.select("div span")):
-            for divspan in soup.select("div span"):
-                text = divspan.get_text()
-                if(re.findall(re_year, text) and len(text)>50):
-                    print(text.strip())
-                    print("************")
-
-        if(soup.select("li")):
-           for li in soup.select("li"):
-                text = li.get_text()
-                if(re.findall(re_year, text) and len(text)>50):
-                    print(text.strip())
-                    print("************")
+                if("http" not in i["href"]):
+                    from urllib.parse import urljoin
+                    hrefs.append(urljoin(self.URL, i["href"]))
+                else:
+                    hrefs.append(i["href"])
+        return hrefs

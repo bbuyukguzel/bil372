@@ -60,27 +60,38 @@ class Crawler:
         while not self.__URLQueue.empty():
             URL = self.__URLQueue.get()
 
-            self.__p = Parser(source=self.get_source_code(URL), URL=URL)
-            """
-            if(self.__fields["name"] != None and len(self.__fields["name"]) == 0):
-                self.__fields["name"] = self.__p.find_name()
+            self.__p = Parser(source=self.get_source_code(URL), url=URL)
+            try:
+                """
+                if(self.__fields["name"] != None and len(self.__fields["name"]) == 0):
+                    self.__fields["name"] = self.__p.find_name()
 
-            if(self.__fields["uni"] != None and len(self.__fields["uni"]) == 0):
-                self.__fields["uni"] = self.__p.find_uniname()
+                if(self.__fields["uni"] != None and len(self.__fields["uni"]) == 0):
+                    self.__fields["uni"] = self.__p.find_uniname()
 
-            if(self.__fields["tel"] != None and len(self.__fields["tel"]) == 0):
-                self.__fields["tel"] = self.__p.find_phone()
+                if(self.__fields["tel"] != None and len(self.__fields["tel"]) == 0):
+                    self.__fields["tel"] = self.__p.find_phone()
 
-            if(self.__fields["email"] != None and len(self.__fields["email"]) == 0):
-                self.__fields["email"] = self.__p.find_email()
-            """
-            if("publica" in URL.lower() or "research" in URL.lower() or "article" in URL.lower()):
-                if(self.__fields["publication"] != None and len(self.__fields["publication"]) == 0):
-                    self.__p.find_publication()
-                break
+                if(self.__fields["email"] != None and len(self.__fields["email"]) == 0):
+                    self.__fields["email"] = self.__p.find_email()
+                    print(self.__fields["email"])
+
+                """
+                if("publica" in URL.lower() or
+                        "research" in URL.lower() or
+                        "article" in URL.lower() or
+                        URL.lower() == self.URL.lower()):
+
+                    if(self.__fields["publication"] != None and len(self.__fields["publication"]) == 0):
+                        self.__p.find_publication()
+                    break
+            except Exception as e:
+                continue
 
     def run(self):
         self.__URLQueue.put(self.URL)
         self.get_links(self.get_source_code(self.URL), self.URL)
+        # print(self.__URLQueue.queue)
         self.traverse()
+
 
