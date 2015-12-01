@@ -45,8 +45,13 @@ class Parser:
                     return unis[k].strip()
 
     def find_email(self):
-        pattern1 = r'(?:[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])'
-        pattern2 = r'^((<[^>]*>)*[mailto:(\sa-zA-Z0-9_.+-])+(@|(\s?(\{|\(|\[)\s?(at|AT)\s?(\}|\)|\])\s?)|(\s(at|AT|@)\s))[a-zA-Z0-9-]+(\.|\s)[a-zA-Z0-9-.]+'
+        pattern1 = r'(?:[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c' \
+                   r'\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]' \
+                   r'*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.)' \
+                   r'{3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f' \
+                   r'\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])'
+        pattern2 = r'^((<[^>]*>)*[mailto:(\sa-zA-Z0-9_.+-])+(@|(\s?(\{|\(|\[)\s?(at|AT)\s?(\}|\)|\])\s?)' \
+                   r'|(\s(at|AT|@)\s))[a-zA-Z0-9-]+(\.|dot|\s)[a-zA-Z0-9-.]+'
 
         res1 = re.findall(pattern1, self.source, re.IGNORECASE)
         if(len(res1) == 0):
@@ -150,3 +155,16 @@ class Parser:
                 else:
                     hrefs.append(i["href"])
         return hrefs
+
+    def parse_publication(self, text):
+        information = {}
+        page_pattern = r'(\(?(pp|Pp).)(\s)?(\d+(\s?-\s?)\d+\)?)|(\d+(pp|Pp).)'
+        date_pattern = r'\(?(((19[0-9]{2})|(20(0|1)[0-9])),?\s?)((January|February|March|April|May|June|July|August|' \
+                       r'September|October|November|December)|(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\.?)' \
+                       r'?\s?([1-9]|[12]\d|3[01])?\)?|\(?((0[1-9]|[12]\d|3[01])?\s?((January|February|March|April|May' \
+                       r'|June|July|August|September|October|November|December)|(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|' \
+                       r'Oct|Nov|Dec)\.?)\,?\s?((19[0-9]{2})|(20(0|1)[0-9]))\)?) '
+
+        information['page'] = re.findall(page_pattern, self.source)
+        information['date'] = re.findall(date_pattern, self.source)
+        return information
