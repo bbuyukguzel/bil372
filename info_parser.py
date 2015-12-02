@@ -14,23 +14,30 @@ class Parser:
         return re.findall(pattern, self.source)
 
     def find_name(self):
-
-        char, i = "", 0
-        pattern = '(<title>\s*|<TITLE>\s*)(.*)(\s*<\/title>|\s*<\/TITLE>)'
-        res = re.findall(pattern, self.source)
-        title = str(res[0][1])  # between title tags
-
-        # Remove texts after the name
-        for char in title:
-            if(char in {'|', '\'', ',', ':', '-'}):
-                break
-            i += 1
-        if (i == len(title)):
-            name = title
-        else:
-            name = title[:title.index(char)]
-
-        return name.strip()
+        try:
+            char, i = "", 0
+            pattern = '(<title>\s*|<TITLE>\s*)(.*)(\s*<\/title>|\s*<\/TITLE>)'
+            res = re.findall(pattern, self.source)
+            title = str(res[0][1])
+            for char in title:
+                if (char in {'|', '\'', ',', ':', '-'}):
+                    break
+                i += 1
+            if (i == len(title)):
+                name = title
+            else:
+                name = title[:title.index(char)]
+        except:
+            return False
+        name = name.replace('Home', '')
+        name = name.replace('Page', '')
+        name = name.replace('Web', '')
+        name = name.replace('Main', '')
+        name = name.strip()
+        try:
+            return (name[0:name.rindex(' ')], name[name.rindex(' ') + 1:])
+        except:
+            return False
 
     def find_uniname(self):
 
