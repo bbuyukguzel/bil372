@@ -71,6 +71,14 @@ class Parser:
                 interest_found.append(i)
         return interest_found
 
+
+    def find_dept(self):
+        with open('dept.txt', 'r') as file:
+            for line in file:
+                if line.lower()[:-1] in self.source.lower():
+                    return line[:-1]
+
+
     def find_uniname(self):
         pattern = "((http|https)://(www|[a-z\-]*)\.)([a-z\.]*(?=\/))"
         reg = re.findall(pattern, self.URL)
