@@ -7,6 +7,8 @@ class Parser:
     def __init__(self, url="", source=""):
         self.URL = url
         self.source = source
+        self.__publist = dict()
+        self.publist2 = list()
 
     def find_phone(self):
         pattern = '(\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4})'
@@ -106,124 +108,134 @@ class Parser:
         else:
             return res1
 
-    def find_publicationxxx(self):
-        publications = []
-        source = ''
-        print("Bananas," in self.source)
-
-        soup_out = BeautifulSoup(self.source, "lxml")
-        keys = ['publications', 'publication', 'Publications:', 'Publications', 'Publication']
-        tags = soup_out.findAll(['strong', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
-
-        for t_out in tags:
-            for i in keys:
-                if i in t_out.text:
-                    source += str(t_out.parent)
-                    print("*** i: " + str(i))
-
-        soup_in = BeautifulSoup(source, "lxml")
-
-        for t_in in soup_in.findAll('p'):
-            t_in = re.sub('<[^>]*>|\[.*\]|\s{2,}', '', str(t_in))
-            publications.append(t_in)
-
-        for i in publications:
-            print(i)
 
     def find_publication(self):
         PUB_LIMIT = 3
+        print("Hello world****************")
         soup = BeautifulSoup(self.source)
         re_year = r'(19[0-9]{2})|(20(0|1)[0-9])'
 
         # Remove before "publication"
+
         source = self.__remove_before_pub(soup)
 
         soup2 = BeautifulSoup(source)
-        if (len(soup2.select("li p")) > PUB_LIMIT):
+        if(len(soup2.select("li p")) > PUB_LIMIT):
             for lip in soup2.select("li p"):
                 text = lip.get_text()
                 self.__helper_pub(re_year, text, lip)
 
-        elif (len(soup2.select("div p")) > PUB_LIMIT):
+        elif(len(soup2.select("div p")) > PUB_LIMIT):
             for divp in soup2.select("div p"):
                 text = divp.get_text()
-                self.__helper_pub(re_year, text, divp.parent)
+                self.__helper_pub(re_year, text, divp)
 
-        elif (len(soup2.select("li span")) > PUB_LIMIT):
+        elif(len(soup2.select("li span")) > PUB_LIMIT):
             for lispan in soup2.select("li span"):
                 text = lispan.get_text()
                 self.__helper_pub(re_year, text, lispan)
 
-        if (len(soup2.select("div span")) > PUB_LIMIT):
+        if(len(soup2.select("div span")) > PUB_LIMIT):
             for divspan in soup2.select("div span"):
                 text = divspan.get_text()
                 self.__helper_pub(re_year, text, divspan)
 
-        if (len(soup2.select("p")) > PUB_LIMIT):
+        if(len(soup2.select("p")) > PUB_LIMIT):
             for p in soup2.select("p"):
                 text = p.get_text()
                 self.__helper_pub(re_year, text, p)
 
-        if (len(soup2.select("li")) > PUB_LIMIT):
+        if(len(soup2.select("li")) > PUB_LIMIT):
             for li in soup2.select("li"):
                 text = li.get_text()
                 self.__helper_pub(re_year, text, li)
 
+        if(self.__publist):
+            for key in self.__publist:
+                info = self.parse_publication(key)
+                self.publist2.append([info['desc'],
+                                      info['page'],
+                                      info['date'],
+                                      self.__publist[key]])
+        return self.publist2
+
     def __remove_before_pub(self, soup):
-        keys = ['publications', 'publication', 'Publications:', 'Publications', 'Publication']
+        keys = ['publications', 'publication', 'Publications:', 'Publications', 'Publication',
+                'paper', 'Paper', 'article', 'Article']
         tags = soup.findAll(['strong', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
 
         for t_out in tags:
             for i in keys:
                 if i in t_out.text:
-                    source = self.source[self.source.index(str(t_out)):]
+                    txt = t_out.text
+                    index = self.source.index(i)
+                    source = self.source[index + len(t_out.text):]
+                    source = source[source.index(">")+1:].strip()
+                    if("</" in source[:5]):
+                        return source[source.index(">"):].strip()
+
                     return source
 
     def __helper_pub(self, re_year, text, src):
-        PUB_DESC_LIMIT = 50
+        PUB_DESC_LIMIT = 30
         if (re.findall(re_year, text) and len(text) > PUB_DESC_LIMIT):
-            print(self.__check_link_in_pub(src))
-            print(text.strip())
-            print("************")
+            self.__publist[text.strip()] = self.__check_link_in_pub(src)
+
 
     def __check_link_in_pub(self, src):
         hrefs = list()
 
         for i in src.find_all("a"):
-            if ("href" in i.attrs):
-                if (i["href"] == "#"):
+            if("href" in i.attrs):
+                if(i["href"] == "#"):
                     continue
 
-                if ("http" not in i["href"]):
+                if("http" not in i["href"]):
                     from urllib.parse import urljoin
                     hrefs.append(urljoin(self.URL, i["href"]))
                 else:
                     hrefs.append(i["href"])
-        return hrefs
+        if(hrefs):
+            return hrefs[0]
+        else:
+            return None
 
     def parse_publication(self, text):
-        information = {}
-        page_pattern = r'(\(?(pp|Pp).)(\s)?(\d+(\s?-\s?)\d+\)?)|(\d+(pp|Pp).)'
+        txt = text
+        information = dict()
+        page_pattern = r'((\(?(pp|Pp).)(\s)?(\d+(\s?-\s?)\d+\)?)|(\d+(pp|Pp).))'
         date_pattern = r'\(?(((19[0-9]{2})|(20(0|1)[0-9])),?\s?)((January|February|March|April|May|June|July|August|' \
                        r'September|October|November|December)|(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\.?)' \
                        r'?\s?([1-9]|[12]\d|3[01])?\)?|\(?((0[1-9]|[12]\d|3[01])?\s?((January|February|March|April|May' \
                        r'|June|July|August|September|October|November|December)|(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|' \
                        r'Oct|Nov|Dec)\.?)\,?\s?((19[0-9]{2})|(20(0|1)[0-9]))\)?) '
-        title_quote_pattern = r'\"(.*)\"'
 
-        if("\"" in text):
-            information["title"] = re.findall(title_quote_pattern, self.source)
+        information['page'] = re.findall(page_pattern, text)
+        information['date'] = re.findall(date_pattern, text)
+
+        if(information['page']):
+            page = information['page'][0][0]
         else:
-            pass
+            page = ''
 
-        information['page'] = re.findall(page_pattern, self.source)
-        information['date'] = re.findall(date_pattern, self.source)
+        if(information['date']):
+            date = information['date'][0][0]
+        else:
+            date = ''
+
+        desc = txt.replace(page, '')
+        desc = desc.replace(date,'')
+
+        information['page'] = page
+        information['date'] = date
+        information['desc'] = desc
+
         return information
 
     def find_address(self):
         pattern = r'(Address|address)(\s|\:)+[a-zA-Z0-9-.\s:\,]*'
         res = re.findall(pattern, self.source)
-        print(res)
+        return res
 
     def find_courses(self):
         COURSE_LIMIT = 3
