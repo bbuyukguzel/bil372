@@ -124,7 +124,6 @@ class Parser:
 
     def find_publication(self):
         PUB_LIMIT = 3
-        print("Hello world****************")
         soup = BeautifulSoup(self.source)
         re_year = r'(19[0-9]{2})|(20(0|1)[0-9])'
 
@@ -202,7 +201,100 @@ class Parser:
                        r'?\s?([1-9]|[12]\d|3[01])?\)?|\(?((0[1-9]|[12]\d|3[01])?\s?((January|February|March|April|May' \
                        r'|June|July|August|September|October|November|December)|(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|' \
                        r'Oct|Nov|Dec)\.?)\,?\s?((19[0-9]{2})|(20(0|1)[0-9]))\)?) '
+        title_quote_pattern = r'\"(.*)\"'
+
+        if("\"" in text):
+            information["title"] = re.findall(title_quote_pattern, self.source)
+        else:
+            pass
 
         information['page'] = re.findall(page_pattern, self.source)
         information['date'] = re.findall(date_pattern, self.source)
         return information
+
+    def find_address(self):
+        pattern = r'(Address|address)(\s|\:)+[a-zA-Z0-9-.\s:\,]*'
+        res = re.findall(pattern, self.source)
+        print(res)
+
+    def find_courses(self):
+        COURSE_LIMIT = 3
+        DESC_LIMIT_MIN = 20
+        DESC_LIMIT_MAX = 50
+
+        print("****************")
+        text = list()
+        soup = BeautifulSoup(self.source)
+
+        # Remove before "course" or "teach"
+
+        try:
+            source = self.__remove_before_course(soup)
+            soup2 = BeautifulSoup(source)
+        except Exception as e:
+            soup2 = BeautifulSoup(self.source)
+
+        if(len(soup2.select("li p")) > COURSE_LIMIT):
+            for lip in soup2.select("li p"):
+                if(len(lip.get_text()) in range(DESC_LIMIT_MIN, DESC_LIMIT_MAX) and
+                        not "\n" in lip.get_text()):
+                    text.append(lip.get_text())
+            return text
+
+        elif(len(soup2.select("div p")) > COURSE_LIMIT):
+            for divp in soup2.select("div p"):
+                if(len(divp.get_text()) in range(DESC_LIMIT_MIN, DESC_LIMIT_MAX) and
+                       not "\n" in divp.get_text()):
+                    text.append(divp.get_text())
+            return text
+
+
+        elif(len(soup2.select("li span")) > COURSE_LIMIT):
+            for lispan in soup2.select("li span"):
+                if(len(lispan.get_text()) in range(DESC_LIMIT_MIN, DESC_LIMIT_MAX) and
+                       not "\n" in lispan.get_text()):
+                    text.append(lispan.get_text())
+            return text
+
+        if(len(soup2.select("div span")) > COURSE_LIMIT):
+            for divspan in soup2.select("div span"):
+                if(len(divspan.get_text()) in range(DESC_LIMIT_MIN, DESC_LIMIT_MAX) and
+                       not "\n" in divspan.get_text()):
+                    text.append(divspan.get_text())
+            return text
+
+        if(len(soup2.select("p")) > COURSE_LIMIT):
+            for p in soup2.select("p"):
+                if(len(p.get_text()) in range(DESC_LIMIT_MIN, DESC_LIMIT_MAX) and
+                       not "\n" in p.get_text()):
+                    text.append(p.get_text())
+            return text
+
+        if(len(soup2.select("li")) > COURSE_LIMIT):
+            for li in soup2.select("li"):
+                if(len(li.get_text()) in range(DESC_LIMIT_MIN, DESC_LIMIT_MAX) and
+                       not "\n" in li.get_text()):
+                    text.append(li.get_text())
+            return text
+
+    def __remove_before_course(self, soup):
+        teach_keys = ['Teaching', 'teaching', 'Course', 'course', "class", "Class"]
+        tags = soup.findAll(['strong', 'title', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
+        source = ""
+
+        for t_out in tags:
+            for i in teach_keys:
+                if i in t_out.text:
+                    source = self.source[self.source.index(str(t_out)):]
+
+        pub_keys = ['publications', 'publication', 'Publications:', 'Publications', 'Publication']
+
+        for t_out in tags:
+            for i in pub_keys:
+                if i in t_out.text:
+                    source = source[:source.index(str(t_out))]
+                    return source
+
+
+        return source
+

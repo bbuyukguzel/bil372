@@ -13,7 +13,9 @@ class Crawler:
         self.__URLQueue = queue.Queue()
         self.__p = None
         self.__keywords = {"contact", "research", "biography", "publication", "class"}
-        self.__fields = {"name": "", "uni": "", "tel": "", "email": "", "publication": "", "rank":"", "dept":""}
+        self.__fields = {"name": "", "uni": "", "tel": "",
+                         "email": "", "publication": "",
+                         "address":"", "course":""}
 
     @staticmethod
     def get_source_code(url):
@@ -85,11 +87,21 @@ class Crawler:
                     if(self.__fields["publication"] != None and len(self.__fields["publication"]) == 0):
                         self.__p.find_publication()
                     break
-                    """
-                #if(self.__fields['rank'] != None and len(self.__fields['rank']) == 0):
-                #    self.__fields['rank'] = self.__p.find_rank()
-                if(self.__fields['dept'] != None and len(self.__fields['dept']) == 0):
-                    self.__fields['dept'] = self.__p.find_dept()
+
+                 """
+
+                if("teach" in URL.lower() or
+                        "course" in URL.lower() or
+                        "class" in URL.lower() or
+                        URL.lower() == self.URL.lower()):
+
+                    if(self.__fields["course"] != None and len(self.__fields["course"]) == 0):
+                        print(self.__p.find_courses())
+
+                """
+                if(self.__fields["address"] != None and len(self.__fields["address"]) == 0):
+                    self.__fields["address"] = self.__p.find_address()
+                """
             except Exception as e:
                 continue
 
