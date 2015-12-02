@@ -1,3 +1,4 @@
+http://www.umram.bilkent.edu.tr/~ergin/mycv/index.php
 http://www.cs.berkeley.edu/~jordan/
 http://www.clarku.edu/faculty/propp/
 http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/
@@ -17,7 +18,6 @@ http://www.cmpe.boun.edu.tr/~ersoy/CemErsoySite/Home.html
 http://www.cmpe.boun.edu.tr/~caglayan/
 http://www.eecs.berkeley.edu/~richter/
 http://www.engineering.cornell.edu/research/faculty/profile.cfm?netid=tc345
-http://www.umram.bilkent.edu.tr/~ergin/mycv/index.php
 http://scholar.harvard.edu/jsnyder
 https://www.educ.cam.ac.uk/people/staff/kettley/
 http://www.csl.cornell.edu/~cbatten/

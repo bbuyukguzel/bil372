@@ -40,21 +40,38 @@ class Parser:
             return False
 
     def find_rank(self):
+        rank_dic = {}
         ranks = ['adjunct professor', 'assistant professor', 'associate Professor', 'professor', 'lecturer',
                  'senior lecturer', 'associate professor', 'research assistant', 'research associate',
-                 'research professor', 'research fellow', 'research instructor', 'instructor', 'research assistant professor',
+                 'research professor', 'research fellow', 'research instructor', 'instructor',
+                 'research assistant professor',
                  'research associate professor', 'postdoctoral researcher', 'agregation', 'docent', 'habilitation',
                  'privatdozent', 'teaching assistant', 'teaching associate', 'visiting professor', 'teaching professor'
-                 'visiting research professor']
+                                                                                                   'visiting research professor']
 
-        rank_dic = {}
         for i in ranks:
             if i in self.source.lower():
                 rank_dic[i] = self.source.lower().index(i)
-        print(min(rank_dic, key=rank_dic.get))
+        return min(rank_dic, key=rank_dic.get)
+
+    def find_interest(self):
+        interest = []
+        with open('academic_dicipline.txt', 'r') as file:
+            for line in file:
+                if line.startswith('* [[') or line.startswith('** [['):
+                    content = line.replace('[[', '').replace(']]', '').replace('* ', '').replace('*', '')[:-1]
+                    if content.find('|') > 0:
+                        content = content[:content.find('|')]
+                    if content.find('(') > 0:
+                        content = content[:content.find('(')]
+                    interest.append(content.lower())
+        interest_found = []
+        for i in interest:
+            if self.source.lower().find(i) > 0:
+                interest_found.append(i)
+        return interest_found
 
     def find_uniname(self):
-
         pattern = "((http|https)://(www|[a-z\-]*)\.)([a-z\.]*(?=\/))"
         reg = re.findall(pattern, self.URL)
         uni_url = reg[0][3]
@@ -75,7 +92,7 @@ class Parser:
                    r'|(\s(at|AT|@)\s))[a-zA-Z0-9-]+(\.|dot|\s)[a-zA-Z0-9-.]+'
 
         res1 = re.findall(pattern1, self.source, re.IGNORECASE)
-        if(len(res1) == 0):
+        if (len(res1) == 0):
             result = re.findall(pattern2, self.source, re.IGNORECASE)
             return result
         else:
@@ -115,32 +132,32 @@ class Parser:
         source = self.__remove_before_pub(soup)
 
         soup2 = BeautifulSoup(source)
-        if(len(soup2.select("li p")) > PUB_LIMIT):
+        if (len(soup2.select("li p")) > PUB_LIMIT):
             for lip in soup2.select("li p"):
                 text = lip.get_text()
                 self.__helper_pub(re_year, text, lip)
 
-        elif(len(soup2.select("div p")) > PUB_LIMIT):
+        elif (len(soup2.select("div p")) > PUB_LIMIT):
             for divp in soup2.select("div p"):
                 text = divp.get_text()
                 self.__helper_pub(re_year, text, divp.parent)
 
-        elif(len(soup2.select("li span")) > PUB_LIMIT):
+        elif (len(soup2.select("li span")) > PUB_LIMIT):
             for lispan in soup2.select("li span"):
                 text = lispan.get_text()
                 self.__helper_pub(re_year, text, lispan)
 
-        if(len(soup2.select("div span")) > PUB_LIMIT):
+        if (len(soup2.select("div span")) > PUB_LIMIT):
             for divspan in soup2.select("div span"):
                 text = divspan.get_text()
                 self.__helper_pub(re_year, text, divspan)
 
-        if(len(soup2.select("p")) > PUB_LIMIT):
+        if (len(soup2.select("p")) > PUB_LIMIT):
             for p in soup2.select("p"):
                 text = p.get_text()
                 self.__helper_pub(re_year, text, p)
 
-        if(len(soup2.select("li")) > PUB_LIMIT):
+        if (len(soup2.select("li")) > PUB_LIMIT):
             for li in soup2.select("li"):
                 text = li.get_text()
                 self.__helper_pub(re_year, text, li)
@@ -166,11 +183,11 @@ class Parser:
         hrefs = list()
 
         for i in src.find_all("a"):
-            if("href" in i.attrs):
-                if(i["href"] == "#"):
+            if ("href" in i.attrs):
+                if (i["href"] == "#"):
                     continue
 
-                if("http" not in i["href"]):
+                if ("http" not in i["href"]):
                     from urllib.parse import urljoin
                     hrefs.append(urljoin(self.URL, i["href"]))
                 else:
