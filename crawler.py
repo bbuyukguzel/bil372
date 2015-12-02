@@ -13,7 +13,7 @@ class Crawler:
         self.__URLQueue = queue.Queue()
         self.__p = None
         self.__keywords = {"contact", "research", "biography", "publication", "class"}
-        self.__fields = {"name": "", "uni": "", "tel": "", "email": "", "publication": ""}
+        self.__fields = {"name": "", "uni": "", "tel": "", "email": "", "publication": "", "rank":""}
 
     @staticmethod
     def get_source_code(url):
@@ -76,7 +76,7 @@ class Crawler:
                     self.__fields["email"] = self.__p.find_email()
                     print(self.__fields["email"])
 
-                """
+
                 if("publica" in URL.lower() or
                         "research" in URL.lower() or
                         "article" in URL.lower() or
@@ -85,6 +85,9 @@ class Crawler:
                     if(self.__fields["publication"] != None and len(self.__fields["publication"]) == 0):
                         self.__p.find_publication()
                     break
+                    """
+                if(self.__fields['rank'] != None and len(self.__fields['rank']) == 0):
+                    self.__fields['rank'] = self.__p.find_rank()
             except Exception as e:
                 continue
 

@@ -39,6 +39,20 @@ class Parser:
         except:
             return False
 
+    def find_rank(self):
+        ranks = ['adjunct professor', 'assistant professor', 'associate Professor', 'professor', 'lecturer',
+                 'senior lecturer', 'associate professor', 'research assistant', 'research associate',
+                 'research professor', 'research fellow', 'research instructor', 'instructor', 'research assistant professor',
+                 'research associate professor', 'postdoctoral researcher', 'agregation', 'docent', 'habilitation',
+                 'privatdozent', 'teaching assistant', 'teaching associate', 'visiting professor', 'teaching professor'
+                 'visiting research professor']
+
+        rank_dic = {}
+        for i in ranks:
+            if i in self.source.lower():
+                rank_dic[i] = self.source.lower().index(i)
+        print(min(rank_dic, key=rank_dic.get))
+
     def find_uniname(self):
 
         pattern = "((http|https)://(www|[a-z\-]*)\.)([a-z\.]*(?=\/))"
