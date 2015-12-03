@@ -56,10 +56,23 @@
     <header id="top" class="header">
         <div class="text-vertical-center">
 			<div class="row" id="wrapper-row">
-				<div class="col-md-2 col-md-offset-1" id="filterpane" style="border: thin solid black">
-					<p>selam</p>			
-				</div>
-				<div class="col-md-8" id="resultpane" style="border: thin solid black">
+				<div class="col-md-2 col-md-offset-1" id="filterpane" style="border: thin solid black; background-color:rgba(0, 0, 0, 0.3);">
+					<br><br>
+
+					<form action="/result" method=post style="text-align: left">
+						<input type="checkbox" name="kisiler" value="kisiler">Kişiler<br>
+						<input type="checkbox" name="universite" value="universite">Üniversite<br>
+						<input type="checkbox" name="bolum" value="bolum">Bölüm<br>
+						<input type="checkbox" name="ilgialani" value="ilgialani">İlgi Alanı<br>
+						<input type="checkbox" name="yayinlar" value="yayinlar">Yayınlar<br>
+						<input type="checkbox" name="projeler" value="projeler">Projeler<br>
+						<input type="checkbox" name="arastirmalar" value="arastirmalar">Araştırmalar<br>
+						<input type="checkbox" name="dersler" value="dersler">Dersler<br>
+						<br>
+						<input type="submit" name="filtrele" id="filtrele" class="form-control btn btn-login" value="Filtrele">
+					</form>
+</div>
+				<div class="col-md-8" id="resultpane" style="border: thin solid black; background-color:rgba(0, 0, 0, 0.3);">
 					<h4>"{{key}}" için bulunan sonuçlar:</h4>
 					
 					{% for i in data %}

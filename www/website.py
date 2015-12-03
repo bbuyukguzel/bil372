@@ -22,7 +22,9 @@ def profile(id):
 @app.route('/result', methods=['POST'])
 def result():
     keyword = request.form["x"]
-    filter = request.form.getlist('')
+    filter = request.form.get('kisiler')
+    print(filter)
+
     # print("id: %s", id)
     l = list()
 
@@ -33,6 +35,8 @@ def result():
     namelist = list()
     for i in l:
         namelist.append(searchByID(i))
+
+
 
     return render_template('/result.html', key=keyword, data=namelist)
 
