@@ -22,41 +22,68 @@ def profile(id):
 @app.route('/result', methods=['POST'])
 def result():
     keyword = request.form["x"]
-    # print("id: %s", id)
+
     l = list()
 
+    res = searchInBio(keyword)
 
     for i in res:
-        l.append(select(i[0], i[1], ""))
+        l.append(i[0])
+
+    namelist = list()
+    for i in l:
+        namelist.append(searchByID(i))
+
+    return render_template('/result.html', key=id, data=namelist)
+
+def searchByID(id):
+    c = db.connect()
+    liste = list()
+
+    query = "select fname, lname from bio where pid=\'"+str(id)+"\'"
+    res = c.execute(query)
+
+    if(res):
+        for i in res:
+             return i
 
 
-    return render_template('/result.html', key=id, data=l)
+    return list("None", "None")
+
 
 def db_connect():
     return create_engine(URL(**setting.DATABASE))
 
-def getName(id):
-    c = db.connect()
-    query = "select fname, lname from bio where pid="+str(id)
-    result = c.execute(query)
+def findAll(keyword):
 
-    liste  = list()
-    for i in result:
-        liste.append(i)
+    tables = ["bio", "contact", "contribute", "interested_in",
+                "person", "project", "publication",
+                "published", "research", "work"]
+
+    searchInBio(keyword)
+
+    c = db.connect()
+
+def searchInBio(keyword):
+    columns = ["fname", "lname", "title", "bplace", "education"]
+    c = db.connect()
+    liste = list()
+
+    for col in columns:
+        query = "select pid from bio where "+col+"=\'"+keyword+"\'"
+        res = c.execute(query)
+        f = res.fetchall()
+        if(f):
+            for i in f:
+                liste.append(i)
 
     return liste
 
-def searchID():
 
-    c = db.connect()
-    query = "select pid from person where pid="+str(id)
-    result = c.execute(query)
-
-    liste  = list()
-    for i in result:
-        liste.append(i)
-
-    return liste
+if __name__ == '__main__':
+    db = db_connect()
+    app.debug=True
+    app.run()
 
 
 
@@ -86,26 +113,4 @@ def select(table, cols, const):
     c.close()
     return liste
 """
-"""
-def findAllDB(keyword):
-    liste = list()
-    c = db.connect()
-    print(keyword)
-    records = c.execute(text("SELECT * from search_columns(\'"+keyword+"\')").execution_options(autocommit=True))
-    # records = c.execute('select * from search_columns(\'%s\')', id)
-    # print(records)
-    for i in records:
-        liste.append([i[1], i[2]])
 
-    # print(liste)
-    c.close()
-    return liste
-"""
-
-
-if __name__ == '__main__':
-    db = db_connect()
-    app.debug=True
-    app.run()
-        
-        
