@@ -22,15 +22,22 @@ def profile(id):
 
 @app.route('/result', methods=['POST'])
 def result():
+    global KEYWORD
     keyword = request.form["x"]
     KEYWORD = keyword
 
-    # print("id: %s", id)
     l = list()
 
     res = searchInBio(keyword)
     for i in res:
-        l.append(i[0])
+        if(not i[0] in l):
+            l.append(i[0])
+
+    res = searchInUni(keyword)
+    for i in res:
+        if(not i[0] in l):
+            l.append(i[0])
+
 
     namelist = list()
     for i in l:
@@ -41,18 +48,23 @@ def result():
 
 @app.route('/result2', methods=['POST'])
 def result2():
-
+    global KEYWORD
     keyword = KEYWORD
     filter = request.form.getlist('filter')
     print(filter)
 
-
-    # print("id: %s", id)
     l = list()
 
-    res = searchInBio(keyword)
-    for i in res:
-        l.append(i[0])
+    if("kisiler" in filter):
+        res = searchInBio(keyword)
+        for i in res:
+            l.append(i[0])
+
+    if("universite" in filter):
+        res = searchInUni(keyword)
+        for i in res:
+            l.append(i[0])
+
 
     namelist = list()
     for i in l:
@@ -79,15 +91,6 @@ def searchByID(id):
 def db_connect():
     return create_engine(URL(**setting.DATABASE))
 
-def findAll(keyword):
-
-    tables = ["bio", "contact", "contribute", "interested_in",
-                "person", "project", "publication",
-                "published", "research", "work"]
-
-    searchInBio(keyword)
-
-    c = db.connect()
 
 def searchInBio(keyword):
     columns = ["fname", "lname", "title", "bplace", "education"]
@@ -104,6 +107,20 @@ def searchInBio(keyword):
 
     return liste
 
+def searchInUni(keyword):
+    columns = ["university"]
+    c = db.connect()
+    liste = list()
+
+    for col in columns:
+        query = "select pid from work where "+col+"=\'"+keyword+"\'"
+        res = c.execute(query)
+        f = res.fetchall()
+        if(f):
+            for i in f:
+                liste.append(i)
+
+    return liste
 
 if __name__ == '__main__':
     db = db_connect()

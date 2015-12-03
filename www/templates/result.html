@@ -56,7 +56,7 @@
     <header id="top" class="header">
         <div class="text-vertical-center">
 			<div class="row" id="wrapper-row">
-				<div class="col-md-2 col-md-offset-1" id="filterpane" style="border: thin solid black; background-color:rgba(0, 0, 0, 0.3);">
+				<div class="col-md-2 col-md-offset-1" id="filterpane">
 					<br><br>
 
 					<form action="/result2" method=post style="text-align: left">
@@ -72,7 +72,7 @@
 						<input type="submit" name="filtrele" id="filtrele" class="form-control btn btn-login" value="Filtrele">
 					</form>
 </div>
-				<div class="col-md-8" id="resultpane" style="border: thin solid black; background-color:rgba(0, 0, 0, 0.3);">
+				<div class="col-md-8" id="resultpane">
 					<h4>"{{key}}" için bulunan sonuçlar:</h4>
 					
 					{% for i in data %}
