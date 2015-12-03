@@ -20,6 +20,11 @@ def profile(id):
     return render_template('/profile.html', data= getName(id))
 
 
+@app.route('/add_person', methods=['POST'])
+def add_person():
+    return render_template('/add_person.html')
+
+
 @app.route('/result', methods=['POST'])
 def result():
     global KEYWORD
