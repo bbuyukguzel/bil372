@@ -85,6 +85,7 @@ class Crawler:
 
                     if (self.__fields["publication"] != None and len(self.__fields["publication"]) == 0):
                         self.__fields["publication"] = self.__p.find_publication()
+
                 if ("teach" in URL.lower() or
                             "course" in URL.lower() or
                             "class" in URL.lower() or

@@ -1,8 +1,6 @@
 import random
 import re
-
 import psycopg2
-
 from crawler import Crawler
 
 
@@ -70,7 +68,7 @@ def db_contribute(pubid, contribute, conn, c):
     conn.commit()
 
 
-def parse(dictionary, conn, c):
+def parse(url, dictionary, conn, c):
     if len(dictionary['name']) > 0:
         fname = dictionary['name'][0]
         lname = dictionary['name'][1]
@@ -105,7 +103,6 @@ def parse(dictionary, conn, c):
         return False
 
     repid = person_found[1]
-
     if len(dictionary['publication']) > 0:
         for pub in dictionary['publication']:
             publication = pub
@@ -123,20 +120,18 @@ def parse(dictionary, conn, c):
         for interest in dictionary['interest']:
             db_interest(repid, interest, conn, c)
     conn.close()
-    return True
+
+    return repid
 
 
 def mainStart(url):
     crawler = Crawler(url)
     dictionary = crawler.run()
-    conn_string = "host='localhost' dbname='bil372' user='postgres' password='admin'"
+    conn_string = "host='localhost' dbname='bil372' user='postgres' password='12345'"
     conn = psycopg2.connect(conn_string)
     c = conn.cursor()
     # c.execute("TRUNCATE TABLE person, bio, contact, interested_in, project, published,contribute, publication, research, work RESTART IDENTITY;")
-    check = parse(dictionary, conn, c)
+    check = parse(url, dictionary, conn, c)
     return check
 
 
-if __name__ == '__main__':
-    url = 'http://mtan.etu.edu.tr/'
-    mainStart(url)

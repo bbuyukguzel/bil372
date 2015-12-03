@@ -3,6 +3,7 @@ from flask import render_template, request
 from sqlalchemy import *
 from sqlalchemy.engine.url import URL
 import setting
+import main
 app = Flask(__name__)
 
 db = None
@@ -22,7 +23,20 @@ def profile(id):
 
 @app.route('/add_person', methods=['POST'])
 def add_person():
-    return render_template('/add_person.html')
+
+    result=""
+    try:
+        keyword = request.form['x']
+    except Exception as e:
+        print(e)
+        pass
+
+    try:
+        result = main.mainStart(keyword)
+    except Exception as e:
+        print(e)
+
+    return render_template('/profile.html', data=result)
 
 
 @app.route('/result', methods=['POST'])
@@ -194,4 +208,3 @@ def select(table, cols, const):
     c.close()
     return liste
 """
-
