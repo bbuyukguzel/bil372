@@ -40,9 +40,9 @@ def result():
 
     try:
         filter = request.form.getlist('filter')
-        print(filter)
     except Exception as e:
         print(e)
+        pass
 
     l = list()
 
@@ -57,7 +57,7 @@ def result():
             for i in res:
                 l.append(i[0])
 
-        if("dept" in filter):
+        if("bolum" in filter):
             res = searchInDept(keyword)
             for i in res:
                 l.append(i[0])
@@ -73,6 +73,16 @@ def result():
                 l.append(i[0])
 
         res = searchInUni(keyword)
+        for i in res:
+            if(not i[0] in l):
+                l.append(i[0])
+
+        res = searchInDept(keyword)
+        for i in res:
+            if(not i[0] in l):
+                l.append(i[0])
+
+        res = searchInInterest(keyword)
         for i in res:
             if(not i[0] in l):
                 l.append(i[0])
