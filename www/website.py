@@ -6,6 +6,7 @@ import setting
 app = Flask(__name__)
 
 db = None
+KEYWORD = ""
 
 @app.route('/')
 @app.route('/index')
@@ -22,8 +23,7 @@ def profile(id):
 @app.route('/result', methods=['POST'])
 def result():
     keyword = request.form["x"]
-    filter = request.form.get('kisiler')
-    print(filter)
+    KEYWORD = keyword
 
     # print("id: %s", id)
     l = list()
@@ -36,6 +36,27 @@ def result():
     for i in l:
         namelist.append(searchByID(i))
 
+    return render_template('/result.html', key=keyword, data=namelist)
+
+
+@app.route('/result2', methods=['POST'])
+def result2():
+
+    keyword = KEYWORD
+    filter = request.form.getlist('filter')
+    print(filter)
+
+
+    # print("id: %s", id)
+    l = list()
+
+    res = searchInBio(keyword)
+    for i in res:
+        l.append(i[0])
+
+    namelist = list()
+    for i in l:
+        namelist.append(searchByID(i))
 
 
     return render_template('/result.html', key=keyword, data=namelist)
