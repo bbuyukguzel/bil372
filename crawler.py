@@ -1,13 +1,14 @@
-import urllib.request
-import requests.exceptions
-from info_parser import Parser
-from bs4 import BeautifulSoup
 import codecs
 import queue
+import urllib.request
+
+import requests.exceptions
+from bs4 import BeautifulSoup
+
+from info_parser import Parser
 
 
 class Crawler:
-
     def __init__(self, URL):
         self.URL = URL
         self.__URLQueue = queue.Queue()
@@ -15,7 +16,7 @@ class Crawler:
         self.__keywords = {"contact", "research", "biography", "publication", "class"}
         self.__fields = {"name": "", "uni": "", "tel": "",
                          "email": "", "publication": "",
-                         "address":"", "course":"", "interest":""}
+                         "address": "", "course": "", "interest": "", "rank": ""}
 
     @staticmethod
     def get_source_code(url):
@@ -42,12 +43,12 @@ class Crawler:
 
     def get_links(self, source, url):
         from urllib.parse import urlparse, urljoin
-        soup = BeautifulSoup(source, "lxml")
+        soup = BeautifulSoup(source)
         wholeLinks = set([i["href"] for i in soup.find_all('a', href=True)])
         for link in wholeLinks:
             if any(j in link for j in self.__keywords):
-                if(link.startswith("http")):
-                    if(urlparse(link).netloc == urlparse(url).netloc):
+                if (link.startswith("http")):
+                    if (urlparse(link).netloc == urlparse(url).netloc):
                         self.__put_link(link)
                 else:
                     combinedLink = urljoin(url, link)
@@ -65,40 +66,40 @@ class Crawler:
             self.__p = Parser(source=self.get_source_code(URL), url=URL)
             try:
 
-                if(self.__fields["name"] != None and len(self.__fields["name"]) == 0):
+                if (self.__fields["name"] != None and len(self.__fields["name"]) == 0):
                     self.__fields["name"] = self.__p.find_name()
 
-                if(self.__fields["uni"] != None and len(self.__fields["uni"]) == 0):
+                if (self.__fields["uni"] != None and len(self.__fields["uni"]) == 0):
                     self.__fields["uni"] = self.__p.find_uniname()
 
-                if(self.__fields["tel"] != None and len(self.__fields["tel"]) == 0):
+                if (self.__fields["tel"] != None and len(self.__fields["tel"]) == 0):
                     self.__fields["tel"] = self.__p.find_phone()
 
-                if(self.__fields["email"] != None and len(self.__fields["email"]) == 0):
+                if (self.__fields["email"] != None and len(self.__fields["email"]) == 0):
                     self.__fields["email"] = self.__p.find_email()
 
-                if("publica" in URL.lower() or
-                        "research" in URL.lower() or
-                        "article" in URL.lower() or
-                        URL.lower() == self.URL.lower()):
+                if ("publica" in URL.lower() or
+                            "research" in URL.lower() or
+                            "article" in URL.lower() or
+                            URL.lower() == self.URL.lower()):
 
-                    if(self.__fields["publication"] != None and len(self.__fields["publication"]) == 0):
+                    if (self.__fields["publication"] != None and len(self.__fields["publication"]) == 0):
                         self.__fields["publication"] = self.__p.find_publication()
+                if ("teach" in URL.lower() or
+                            "course" in URL.lower() or
+                            "class" in URL.lower() or
+                            URL.lower() == self.URL.lower()):
 
-                if("teach" in URL.lower() or
-                        "course" in URL.lower() or
-                        "class" in URL.lower() or
-                        URL.lower() == self.URL.lower()):
-
-                    if(self.__fields["course"] != None and len(self.__fields["course"]) == 0):
+                    if (self.__fields["course"] != None and len(self.__fields["course"]) == 0):
                         self.__fields["course"] = self.__p.find_courses()
 
-                if(self.__fields["address"] != None and len(self.__fields["address"]) == 0):
+                if (self.__fields["address"] != None and len(self.__fields["address"]) == 0):
                     self.__fields["address"] = self.__p.find_address()
 
-                if(self.__fields["interest"] != None and len(self.__fields["interest"]) == 0):
+                if (self.__fields["interest"] != None and len(self.__fields["interest"]) == 0):
                     self.__fields["interest"] = self.__p.find_interest()
-
+                if (self.__fields["rank"] != None and len(self.__fields["rank"]) == 0):
+                    self.__fields["rank"] = self.__p.find_rank()
 
             except Exception as e:
                 continue
@@ -108,7 +109,8 @@ class Crawler:
         self.get_links(self.get_source_code(self.URL), self.URL)
         # print(self.__URLQueue.queue)
         self.traverse()
-        for i in self.__fields:
-            print(str(i) + " --> " + str(self.__fields[i]))
 
+        # for i in self.__fields:
+        # print(str(i) + " --> " + str(self.__fields[i]))
 
+        return self.__fields
