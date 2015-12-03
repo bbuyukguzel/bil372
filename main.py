@@ -58,7 +58,7 @@ def add_database(url, fname, lname, uniname, rank, researchList, interestList, e
             c.execute(query, data)
             conn.commit()
             counter += 1
-        query = "INSERT INTO contact (pid,email,phone,fax,office_no,address) VALUES (%s, %s, %s, %s, %s,&s);"
+        query = "INSERT INTO contact (pid,email,phone,fax,office_no,address) VALUES (%s, %s, %s, %s, %s,%s);"
         data = (repid, email, phone, fax, office_no, address)
         c.execute(query, data)
         conn.commit()
@@ -69,7 +69,7 @@ def add_database(url, fname, lname, uniname, rank, researchList, interestList, e
             c.execute(query, data)
             conn.commit()
             counter += 1
-        query = "INSERT INTO contact (pid,email,phone,fax,office_no,address) VALUES (%s, %s, %s, %s, %s,&s);"
+        query = "INSERT INTO contact (pid,email,phone,fax,office_no,address) VALUES (%s, %s, %s, %s, %s,%s);"
         data = (repid, email, phone, fax, office_no, address)
         c.execute(query, data)
         conn.commit()
