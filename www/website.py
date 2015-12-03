@@ -57,7 +57,7 @@ def result():
             for i in res:
                 l.append(i[0])
 
-        if("dept" in filter):
+        if("bolum" in filter):
             res = searchInDept(keyword)
             for i in res:
                 l.append(i[0])

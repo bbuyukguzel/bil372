@@ -60,20 +60,20 @@
 					<br><br>
 
 					<form action="/result" method=post style="text-align: left">
-						<input type="checkbox" name="filter" value="kisiler">Kişiler<br>
-						<input type="checkbox" name="filter" value="universite">Üniversite<br>
-						<input type="checkbox" name="filter" value="bolum">Bölüm<br>
-						<input type="checkbox" name="filter" value="ilgialani">İlgi Alanı<br>
-						<input type="checkbox" name="filter" value="yayinlar">Yayınlar<br>
-						<input type="checkbox" name="filter" value="projeler">Projeler<br>
-						<input type="checkbox" name="filter" value="arastirmalar">Araştırmalar<br>
-						<input type="checkbox" name="filter" value="dersler">Dersler<br>
+						<input type="checkbox" name="filter" value="kisiler">&nbsp;&nbsp;Kişiler<br>
+						<input type="checkbox" name="filter" value="universite">&nbsp;&nbsp;Üniversite<br>
+						<input type="checkbox" name="filter" value="bolum">&nbsp;&nbsp;Bölüm<br>
+						<input type="checkbox" name="filter" value="ilgialani">&nbsp;&nbsp;İlgi Alanı<br>
+						<input type="checkbox" name="filter" value="yayinlar">&nbsp;&nbsp;Yayınlar<br>
+						<input type="checkbox" name="filter" value="projeler">&nbsp;&nbsp;Projeler<br>
+						<input type="checkbox" name="filter" value="arastirmalar">&nbsp;&nbsp;Araştırmalar<br>
+						<input type="checkbox" name="filter" value="dersler">&nbsp;&nbsp;Dersler<br>
 						<br>
-						<input type="submit" name="filtrele" id="filtrele" class="form-control btn btn-login" value="Filtrele">
+						<input type="submit" name="filtrele" id="filtrele" class="form-control btn btn-tw" value="Filtrele">
 					</form>
 </div>
 				<div class="col-md-8" id="resultpane">
-					<h4>"{{key}}" için bulunan sonuçlar:</h4>
+					<h4 style="text-align: left;">"{{key}}" için bulunan sonuçlar:</h4><br>
 					
 					{% for i in data %}
 					<div class="col-md-12" id="result-item-wrapper">
@@ -83,7 +83,7 @@
 								<div class="col-md-2" id="result-item-photo">
 									<img src="/static/img/pp.png">
 								</div>
-							
+
 								<div class="col-md-10" id="result-item-info">
 									<a href="profile/{{i[0]}}">{{i[0]}}</a>
 									<br>
