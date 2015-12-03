@@ -23,62 +23,59 @@ def profile(id):
 @app.route('/result', methods=['POST'])
 def result():
     global KEYWORD
-    keyword = request.form["x"]
-    KEYWORD = keyword
+    keyword = ""
+    filter=""
+
+    try:
+        keyword = request.form['x']
+    except Exception as e:
+        print(e)
+        pass
+
+    if(keyword):
+        KEYWORD = keyword
+    else:
+        keyword = KEYWORD
+
+
+    try:
+        filter = request.form.getlist('filter')
+        print(filter)
+    except Exception as e:
+        print(e)
 
     l = list()
 
-    res = searchInBio(keyword)
-    for i in res:
-        if(not i[0] in l):
-            l.append(i[0])
+    if(filter):
+        if("kisiler" in filter):
+            res = searchInBio(keyword)
+            for i in res:
+                l.append(i[0])
 
-    res = searchInUni(keyword)
-    for i in res:
-        if(not i[0] in l):
-            l.append(i[0])
+        if("universite" in filter):
+            res = searchInUni(keyword)
+            for i in res:
+                l.append(i[0])
 
+        if("dept" in filter):
+            res = searchInDept(keyword)
+            for i in res:
+                l.append(i[0])
 
-    namelist = list()
-    for i in l:
-        namelist.append(searchByID(i))
-
-    return render_template('/result.html', key=keyword, data=namelist)
-
-
-@app.route('/result2', methods=['POST'])
-def result2():
-    global KEYWORD
-    keyword = KEYWORD
-    filter = request.form.getlist('filter')
-    print(filter)
-
-    l = list()
-
-    if("kisiler" in filter):
+        if("ilgialani" in filter):
+            res = searchInInterest(keyword)
+            for i in res:
+                l.append(i[0])
+    else:
         res = searchInBio(keyword)
         for i in res:
-            l.append(i[0])
+            if(not i[0] in l):
+                l.append(i[0])
 
-    if("universite" in filter):
         res = searchInUni(keyword)
         for i in res:
-            l.append(i[0])
-
-    if("dept" in filter):
-        res = searchInDept(keyword)
-        for i in res:
-            l.append(i[0])
-
-    if("ilgialani" in filter):
-        res = searchInInterest(keyword)
-        for i in res:
-            l.append(i[0])
-
-
-
-
-
+            if(not i[0] in l):
+                l.append(i[0])
 
     namelist = list()
     for i in l:
