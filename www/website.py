@@ -65,6 +65,20 @@ def result2():
         for i in res:
             l.append(i[0])
 
+    if("dept" in filter):
+        res = searchInDept(keyword)
+        for i in res:
+            l.append(i[0])
+
+    if("ilgialani" in filter):
+        res = searchInInterest(keyword)
+        for i in res:
+            l.append(i[0])
+
+
+
+
+
 
     namelist = list()
     for i in l:
@@ -108,19 +122,32 @@ def searchInBio(keyword):
     return liste
 
 def searchInUni(keyword):
-    columns = ["university"]
     c = db.connect()
-    liste = list()
+    query = "select pid from work where "+"university"+"=\'"+keyword+"\'"
+    res = c.execute(query)
+    f = res.fetchall()
 
-    for col in columns:
-        query = "select pid from work where "+col+"=\'"+keyword+"\'"
-        res = c.execute(query)
-        f = res.fetchall()
-        if(f):
-            for i in f:
-                liste.append(i)
+    return [i for i in f if f]
 
-    return liste
+
+def searchInDept(keyword):
+    c = db.connect()
+    query = "select pid from work where "+'dept'+"=\'"+keyword+"\'"
+    res = c.execute(query)
+    f = res.fetchall()
+
+    return [i for i in f if f]
+
+
+def searchInInterest(keyword):
+    c = db.connect()
+    query = "select pid from interested_in where "+'interest'+"=\'"+keyword+"\'"
+    res = c.execute(query)
+    f = res.fetchall()
+
+    return [i for i in f if f]
+
+
 
 if __name__ == '__main__':
     db = db_connect()
