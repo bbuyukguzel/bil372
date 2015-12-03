@@ -22,11 +22,11 @@ def profile(id):
 @app.route('/result', methods=['POST'])
 def result():
     keyword = request.form["x"]
-
+    filter = request.form.getlist('')
+    # print("id: %s", id)
     l = list()
 
     res = searchInBio(keyword)
-
     for i in res:
         l.append(i[0])
 
@@ -34,7 +34,7 @@ def result():
     for i in l:
         namelist.append(searchByID(i))
 
-    return render_template('/result.html', key=id, data=namelist)
+    return render_template('/result.html', key=keyword, data=namelist)
 
 def searchByID(id):
     c = db.connect()
