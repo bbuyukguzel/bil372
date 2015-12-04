@@ -65,6 +65,7 @@
 						<input type="checkbox" name="filter" value="bolum">&nbsp;&nbsp;Bölüm<br>
 						<input type="checkbox" name="filter" value="ilgialani">&nbsp;&nbsp;İlgi Alanı<br>
 						<input type="checkbox" name="filter" value="yayinlar">&nbsp;&nbsp;Yayınlar<br>
+                        <hr>
 						<input type="checkbox" name="filter" value="projeler">&nbsp;&nbsp;Projeler<br>
 						<input type="checkbox" name="filter" value="arastirmalar">&nbsp;&nbsp;Araştırmalar<br>
 						<input type="checkbox" name="filter" value="dersler">&nbsp;&nbsp;Dersler<br>
@@ -81,15 +82,14 @@
 							
 							<div class="row" id="result-item-row">
 								<div class="col-md-2" id="result-item-photo">
-									<img src="/static/img/pp.png">
+									<img class="resize" src="/static/img/pp.png">
 								</div>
 
 								<div class="col-md-10" id="result-item-info">
-									<a href="profile/{{i[0]}}">{{i[1].title()}} {{i[2].title()}}</a> <!-- name -->
-									<br>
-									<p>{{i[3].title()}}</p> <!-- title -->
-									<br>
-									<p>{{i[4].title()}}</p> <!-- university -->
+									<a class="crhref" href="profile/{{i[0]}}">{{i[1].title()}} {{i[2].title()}}</a> <!-- name -->
+
+									<p class="crtext">{{i[3].title()}}</p> <!-- title -->
+									<p class="crtext">{{i[4].title()}}</p> <!-- university -->
 								</div>
 							</div>
 						</div>
