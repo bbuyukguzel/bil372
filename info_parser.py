@@ -12,7 +12,6 @@ class Parser:
 
     def find_phone(self):
         pattern = '(\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4})'
-        # print(re.findall(pattern, self.source))
         return re.findall(pattern, self.source)
 
     def find_name(self):
@@ -37,7 +36,7 @@ class Parser:
         name = name.replace('Main', '')
         name = name.strip()
         try:
-            return (name[0:name.rindex(' ')], name[name.rindex(' ') + 1:])
+            return (name[0:name.rindex(' ')].lower(), name[name.rindex(' ') + 1:].lower())
         except:
             return False
 
@@ -54,11 +53,12 @@ class Parser:
         for i in ranks:
             if i in self.source.lower():
                 rank_dic[i] = self.source.lower().index(i)
+
         return min(rank_dic, key=rank_dic.get)
 
     def find_interest(self):
         interest = []
-        with open('academic_dicipline.txt', 'r') as file:
+        with open('C:\\academic_dicipline.txt', 'r') as file:
             for line in file:
                 if line.startswith('* [[') or line.startswith('** [['):
                     content = line.replace('[[', '').replace(']]', '').replace('* ', '').replace('*', '')[:-1]
@@ -78,19 +78,23 @@ class Parser:
         with open('dept.txt', 'r') as file:
             for line in file:
                 if line.lower()[:-1] in self.source.lower():
-                    return line[:-1]
+                    return line[:-1].lower()
 
 
     def find_uniname(self):
-        pattern = "((http|https)://(www|[a-z\-]*)\.)([a-z\.]*(?=\/))"
+        """pattern = "((http|https)://(www|[a-z\-]*)\.)([a-z\.]*(?=\/))"
         reg = re.findall(pattern, self.URL)
         uni_url = reg[0][3]
+        """
+        from urllib.parse import urlparse
+        uni_url = urlparse(self.URL).netloc
 
-        with open("uni.json") as f:
-            unis = json.load(f)
-            for k in unis:
-                if uni_url.endswith(k):
-                    return unis[k].strip()
+        f = open("C:\\uni.json")
+        unis = json.load(f)
+        f.close()
+        for k in unis:
+            if uni_url.endswith(k):
+                return unis[k].strip().lower()
 
     def find_email(self):
         pattern1 = r'(?:[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c' \
@@ -111,7 +115,6 @@ class Parser:
 
     def find_publication(self):
         PUB_LIMIT = 3
-        print("Hello world****************")
         soup = BeautifulSoup(self.source)
         re_year = r'(19[0-9]{2})|(20(0|1)[0-9])'
 
@@ -242,7 +245,6 @@ class Parser:
         DESC_LIMIT_MIN = 20
         DESC_LIMIT_MAX = 50
 
-        print("****************")
         text = list()
         soup = BeautifulSoup(self.source)
 

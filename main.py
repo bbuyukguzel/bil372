@@ -125,8 +125,11 @@ def parse(url, dictionary, conn, c):
 
 
 def mainStart(url):
+    print("************")
+    print(url)
     crawler = Crawler(url)
     dictionary = crawler.run()
+    print(dictionary)
     conn_string = "host='localhost' dbname='bil372' user='postgres' password='12345'"
     conn = psycopg2.connect(conn_string)
     c = conn.cursor()

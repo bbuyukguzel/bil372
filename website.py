@@ -46,7 +46,7 @@ def result():
     filter=""
 
     try:
-        keyword = request.form['x']
+        keyword = request.form['x'].lower()
     except Exception as e:
         print(e)
         pass
@@ -138,7 +138,7 @@ def searchInBio(keyword):
     liste = list()
 
     for col in columns:
-        query = "select pid from bio where "+col+"=\'"+keyword+"\'"
+        query = "select pid from bio where "+col+" ilike \'"+keyword+"\'"
         res = c.execute(query)
         f = res.fetchall()
         if(f):
@@ -149,7 +149,7 @@ def searchInBio(keyword):
 
 def searchInUni(keyword):
     c = db.connect()
-    query = "select pid from work where "+"university"+"=\'"+keyword+"\'"
+    query = "select pid from work where university"+" ilike \'"+keyword+"\'"
     res = c.execute(query)
     f = res.fetchall()
 
@@ -158,7 +158,7 @@ def searchInUni(keyword):
 
 def searchInDept(keyword):
     c = db.connect()
-    query = "select pid from work where "+'dept'+"=\'"+keyword+"\'"
+    query = "select pid from work where dept"+" ilike \'"+keyword+"\'"
     res = c.execute(query)
     f = res.fetchall()
 
@@ -167,7 +167,7 @@ def searchInDept(keyword):
 
 def searchInInterest(keyword):
     c = db.connect()
-    query = "select pid from interested_in where "+'interest'+"=\'"+keyword+"\'"
+    query = "select pid from interested_in where interest"+" ilike \'"+keyword+"\'"
     res = c.execute(query)
     f = res.fetchall()
 
