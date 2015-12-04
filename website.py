@@ -18,7 +18,47 @@ def homepage():
 
 @app.route('/profile/<id>')
 def profile(id):
-    return render_template('/profile.html', data= getName(id))
+    data = list()
+    c = db.connect()
+
+    # bio
+    query1 = "select fname, lname, title from bio where pid=\'"+str(id)+"\';"
+    res = c.execute(query1)
+    f = res.fetchall()
+    bio = [i for i in f if f][0]
+    data.append(bio)
+
+    # work
+    query2 = "select university, dept from work where pid=\'"+str(id)+"\';"
+    res = c.execute(query2)
+    f = res.fetchall()
+    work = [i for i in f if f][0]
+    data.append(work)
+
+
+    # publication
+    query3 = "select pubid from published where pid=\'"+str(id)+"\';"
+    res = c.execute(query3)
+    f = res.fetchall()
+    pubid = [i[0] for i in f if f]
+    publist = list()
+    for j in pubid:
+        query4 = "select pubname, url from publication where pubid=\'"+str(j)+"\';"
+        res = c.execute(query4)
+        f = res.fetchall()
+        publist.append([(i[0],i[1]) for i in f if f])
+
+    print(publist)
+    data.append(publist)
+
+    # interest
+    query5 = "select interest from interested_in where pid=\'"+str(id)+"\';"
+    res = c.execute(query5)
+    f = res.fetchall()
+    interest = [i[0] for i in f if f]
+    data.append(interest)
+
+    return render_template('/profile.html', data= data)
 
 
 @app.route('/add_person', methods=['POST'])
