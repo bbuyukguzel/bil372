@@ -55,7 +55,14 @@
     <!-- Header -->
     <header id="top" class="header">
         <div class="text-vertical-center">
-			<h2>{{data}}</h2>
+            <div class="col-md-8" id="resultpane">
+            {% for i in range(data|length) %}
+                {% for j in range(data[i]|length) %}
+                    <p>{{data[i][j]}}</p>
+                    <br/>
+                {% endfor %}
+            {% endfor %}
+            </div>
         </div>
     </header>
 
