@@ -29,7 +29,7 @@ class Parser:
             else:
                 name = title[:title.index(char)]
         except:
-            return False
+            return ""
         name = name.replace('Home', '')
         name = name.replace('Page', '')
         name = name.replace('Web', '')
@@ -38,17 +38,17 @@ class Parser:
         try:
             return (name[0:name.rindex(' ')].lower(), name[name.rindex(' ') + 1:].lower())
         except:
-            return False
+            return ""
 
     def find_rank(self):
         rank_dic = {}
         ranks = ['adjunct professor', 'assistant professor', 'associate Professor', 'professor', 'lecturer',
                  'senior lecturer', 'associate professor', 'research assistant', 'research associate',
                  'research professor', 'research fellow', 'research instructor', 'instructor',
-                 'research assistant professor',
-                 'research associate professor', 'postdoctoral researcher', 'agregation', 'docent', 'habilitation',
-                 'privatdozent', 'teaching assistant', 'teaching associate', 'visiting professor', 'teaching professor'
-                                                                                                   'visiting research professor']
+                 'research assistant professor', 'research associate professor', 'postdoctoral researcher',
+                 'agregation', 'docent', 'habilitation', 'privatdozent', 'teaching assistant',
+                 'teaching associate', 'visiting professor', 'teaching professor', 'visiting research professor',
+                 'doç. dr.']
 
         for i in ranks:
             if i in self.source.lower():
@@ -75,17 +75,14 @@ class Parser:
 
 
     def find_dept(self):
-        with open('dept.txt', 'r') as file:
+        with open('C:\\dept.txt', 'r') as file:
             for line in file:
                 if line.lower()[:-1] in self.source.lower():
                     return line[:-1].lower()
 
 
     def find_uniname(self):
-        """pattern = "((http|https)://(www|[a-z\-]*)\.)([a-z\.]*(?=\/))"
-        reg = re.findall(pattern, self.URL)
-        uni_url = reg[0][3]
-        """
+
         from urllib.parse import urlparse
         uni_url = urlparse(self.URL).netloc
 

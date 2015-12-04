@@ -14,7 +14,7 @@ def test(n=5, sample=True):
         return content
 
 
-def add_database(url, fname, lname, uniname, rank, email, phone, fax, office_no, address, conn, c):
+def add_database(url, fname, lname, uniname, dept, rank, email, phone, fax, office_no, address, conn, c):
     c.execute("SELECT * FROM person where website = \'" + url + "\'")
     result = c.fetchall()
     if len(result) == 0:
@@ -25,7 +25,7 @@ def add_database(url, fname, lname, uniname, rank, email, phone, fax, office_no,
         c.execute(query, data)
         conn.commit()
         query = "INSERT INTO work (pid,university, dept) VALUES (%s, %s, %s);"
-        data = (repid, uniname, rank)
+        data = (repid, uniname, dept)
         c.execute(query, data)
         conn.commit()
         query = "INSERT INTO contact (pid,email,phone,fax,office_no,address) VALUES (%s, %s, %s, %s, %s,%s);"
@@ -33,8 +33,9 @@ def add_database(url, fname, lname, uniname, rank, email, phone, fax, office_no,
         c.execute(query, data)
         conn.commit()
     else:
-        conn.close()
-        return True, 0
+        print("line36: " + str(result[0]))
+        return True, result[0]
+
     return False, repid
 
 
@@ -96,11 +97,15 @@ def parse(url, dictionary, conn, c):
     else:
         uni = dictionary['uni']
 
-    person_found = add_database(url, fname, lname, uni, rank, email, tel, tel, 'UNKNOWN', 'address', conn, c)
+    if dictionary['dept'] == '':
+        dept = 'UNKNOWN'
+    else:
+        dept = dictionary['dept']
+
+    person_found = add_database(url, fname, lname, uni, dept, rank, email, tel, tel, 'UNKNOWN', 'address', conn, c)
 
     if person_found[0] == True:
-        # print('person is already registered')
-        return False
+        return person_found[1][0]
 
     repid = person_found[1]
     if len(dictionary['publication']) > 0:
@@ -134,7 +139,8 @@ def mainStart(url):
     conn = psycopg2.connect(conn_string)
     c = conn.cursor()
     # c.execute("TRUNCATE TABLE person, bio, contact, interested_in, project, published,contribute, publication, research, work RESTART IDENTITY;")
-    check = parse(url, dictionary, conn, c)
-    return check
+    id = parse(url, dictionary, conn, c)
+    print("PID:"+str(id))
+    return id
 
 

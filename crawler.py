@@ -14,7 +14,7 @@ class Crawler:
         self.__URLQueue = queue.Queue()
         self.__p = None
         self.__keywords = {"contact", "research", "biography", "publication", "class"}
-        self.__fields = {"name": "", "uni": "", "tel": "",
+        self.__fields = {"name": "", "uni": "", "dept":"", "tel": "",
                          "email": "", "publication": "",
                          "address": "", "course": "", "interest": "", "rank": ""}
 
@@ -74,6 +74,13 @@ class Crawler:
                 try:
                     if (self.__fields["uni"] != None and len(self.__fields["uni"]) == 0):
                         self.__fields["uni"] = self.__p.find_uniname()
+                except Exception as e:
+                    pass
+
+
+                try:
+                    if (self.__fields["dept"] != None and len(self.__fields["dept"]) == 0):
+                        self.__fields["dept"] = self.__p.find_dept()
                 except Exception as e:
                     pass
 

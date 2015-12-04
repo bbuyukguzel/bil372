@@ -58,7 +58,7 @@ def profile(id):
     interest = [i[0] for i in f if f]
     data.append(interest)
 
-    return render_template('/profile.html', data= data)
+    return render_template('/profile.html', pid=id, data= data)
 
 
 @app.route('/add_person', methods=['POST'])
@@ -73,10 +73,31 @@ def add_person():
 
     try:
         result = main.mainStart(keyword)
+        print("line76: "+str(result))
     except Exception as e:
         print(e)
 
-    return render_template('/profile.html', data=result)
+    return profile(result)
+
+@app.route('/listall')
+@app.route('/listall.html')
+
+def list_all():
+
+    data = list()
+    c = db.connect()
+
+    query = "select bio.pid, fname, lname, title, university from bio, work " \
+                    "where bio.pid = work.pid"
+
+    res = c.execute(query)
+
+    if(res):
+        for i in res:
+             data.append(i)
+
+    print(data)
+    return render_template("listall.html", data=data)
 
 
 @app.route('/result', methods=['POST'])
@@ -237,7 +258,6 @@ def searchInPub(keyword):
         query = "select pid from published where pubid=\'"+str(i)+"\';"
         res = c.execute(query)
         f = res.fetchall()
-        print(f)
         for i in f:
             id_list.append(i)
 

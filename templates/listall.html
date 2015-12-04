@@ -9,13 +9,13 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Arama Sonuçları</title>
+    <title>Kayıtlar</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="static/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="static/index.css" rel="stylesheet">
+    <link href="static/listall.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="static/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -32,7 +32,7 @@
 
 <body>
 
-    <nav class="navbar navbar-default">
+	<nav class="navbar navbar-default">
 	  <div class="container-fluid">
 		<!-- Brand and toggle get grouped for better mobile display -->
 		<div class="navbar-header">
@@ -58,30 +58,13 @@
     <header id="top" class="header">
         <div class="text-vertical-center">
 			<div class="row" id="wrapper-row">
-				<div class="col-md-2 col-md-offset-1" id="filterpane">
-					<br><br>
 
-					<form action="/result" method=post style="text-align: left">
-						<input type="checkbox" name="filter" value="kisiler">&nbsp;&nbsp;Kişiler<br>
-						<input type="checkbox" name="filter" value="universite">&nbsp;&nbsp;Üniversite<br>
-						<input type="checkbox" name="filter" value="bolum">&nbsp;&nbsp;Bölüm<br>
-						<input type="checkbox" name="filter" value="ilgialani">&nbsp;&nbsp;İlgi Alanı<br>
-						<input type="checkbox" name="filter" value="yayinlar">&nbsp;&nbsp;Yayınlar<br>
-                        <hr>
-						<input type="checkbox" name="filter" value="projeler">&nbsp;&nbsp;Projeler<br>
-						<input type="checkbox" name="filter" value="arastirmalar">&nbsp;&nbsp;Araştırmalar<br>
-						<input type="checkbox" name="filter" value="dersler">&nbsp;&nbsp;Dersler<br>
-						<br>
-						<input type="submit" name="filtrele" id="filtrele" class="form-control btn btn-tw" value="Filtrele">
-					</form>
-</div>
-				<div class="col-md-8" id="resultpane">
-					<h4 style="text-align: left;">"{{key}}" için bulunan sonuçlar:</h4><br>
-					
+				<div class="col-md-8 col-md-offset-2" id="resultpane">
+
 					{% for i in data %}
 					<div class="col-md-12" id="result-item-wrapper">
 						<div class="col-md-12" id="result-item" >
-							
+
 							<div class="row" id="result-item-row">
 								<div class="col-md-2" id="result-item-photo">
 									<img class="resize" src="/static/img/pp.png">
@@ -122,9 +105,9 @@
 					</div>
 					{% endfor %}
 				</div>
-				
+
 				<div class="col-md-1"></div>
-			
+
 			</div>
         </div>
     </header>
@@ -136,7 +119,7 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="static/js/bootstrap.min.js"></script>
 
-	   
+
     <script src="static/js/script.js"></script>
 
 </body>
